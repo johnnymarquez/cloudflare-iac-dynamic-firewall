@@ -15,14 +15,14 @@ variable "cf_apikey" {
   sensitive   = true
 }
 
-  variable "account_id" {
+variable "account_id" {
   description = "Account ID"
   type        = string
 }
 
 variable "zone" {
   description = "Map of project names to configuration."
-  type        = object({
+  type = object({
     paused = bool,
     plan   = string,
     type   = string,
@@ -32,7 +32,7 @@ variable "zone" {
 
 variable "fw_rules" {
   description = "Default Firewall Rules"
-  type        = list(object({
+  type = list(object({
     action      = string,
     description = string,
     expression  = string,
@@ -46,7 +46,7 @@ variable "fw_rules" {
       expression  = ""
       paused      = false
       products    = []
-    },
+    }
     # Add dynamically more rules as sets of strings
     #    {
     #      action      = "allow"
@@ -60,7 +60,7 @@ variable "fw_rules" {
 
 variable "fw_rules_extra" {
   description = "Extra rule managed outside of scope"
-  type        = object({
+  type = object({
     enabled     = bool,
     action      = string,
     description = string,
