@@ -22,7 +22,7 @@ variable "account_id" {
 
 variable "zone" {
   description = "Map of project names to configuration."
-  type = object({
+  type        = object({
     paused = bool,
     plan   = string,
     type   = string,
@@ -32,35 +32,19 @@ variable "zone" {
 
 variable "fw_rules" {
   description = "Default Firewall Rules"
-  type = list(object({
+  type        = list(object({
     action      = string,
     description = string,
     expression  = string,
     paused      = bool,
     products    = set(string),
   }))
-  default = [
-    {
-      action      = "allow"
-      description = "Allow rule"
-      expression  = ""
-      paused      = false
-      products    = []
-    }
-    # Add dynamically more rules as sets of strings
-    #    {
-    #      action      = "allow"
-    #      description = "allow:amv/acceptlist-aws"
-    #      expression  = "(ip.src in $amv_aws)"
-    #      paused      = false
-    #      products    = []
-    #    }
-  ]
+  default = []
 }
 
 variable "fw_rules_extra" {
   description = "Extra rule managed outside of scope"
-  type = object({
+  type        = object({
     enabled     = bool,
     action      = string,
     description = string,
@@ -73,5 +57,28 @@ variable "fw_rules_extra" {
     description = ""
     paused      = true
     products    = []
-  }
+  },
+  # Add dynamically more rules as sets of strings
+  #    {
+  #      action      = "allow"
+  #      description = "allow:amv/acceptlist-aws"
+  #      expression  = "(ip.src in $amv_aws)"
+  #      paused      = false
+  #      products    = []
+  #    }
+}
+
+variable "dynamic_ruleset" {
+  description = "Cloudflare Rulesets dynamically assigned into the same resource."
+  type        = list(object({
+    action      = string,
+    description = string,
+    enabled     = bool,
+    expression  = string,
+    headers     = list(object({
+      name      = string,
+      operation = string,
+      value     = string,
+    }))
+  }))
 }

@@ -21,9 +21,10 @@ include the dynamic provisioning of new rules.
 
 ## Firewall Rules
 
-The process to include a new rule is to add it into the sets of strings in fw_rules_default (variables.tf),
-fw_rules_brand (env/brand.tfvars),
-fw_rules_asn_bot(env/brand.tfvars) and fulfilling the required fields.
+The process to include a new rule is to add it into the sets of strings in the ```tfvars/env``` file, since this would
+allow
+to dynamically assign different rules to specific workspaces. A different approach would be to assign the rules with the
+same format into the ```fw_rules``` resource inside ```variables.tf```
 Example:
 
 ```
@@ -40,3 +41,45 @@ For possible values on action, expression, and products, please refer to
 [Cloudflare Documentation](https://developers.cloudflare.com/firewall/).
 For the description field, ideally it should be composed of "actions:brand/description"
 
+## Ruleset
+
+Dynamic Ruleset resource has the capability to automatically create new resources by just listing the as a list of
+objects into the ```tfvars/env``` file. With the given structure, the resource allows un unlimited number of rulesets
+with unlimited number of nested headers inside whichever ruleset created;
+The following is an example structure that can increase according to the needs of the project. Although it's a
+recommended practice to maintain a clear organization of such items. When a different project/purpose for new rulesets
+is required, a new resource with the same approach would be better suited.
+
+```
+  {
+    action      = "rewrite",
+    description = "ClientHints",
+    enabled     = true
+    expression  = "(http.request.method eq \"GET\")"
+    headers     = [
+      {
+        name      = "accept-ch"
+        operation = "set"
+        value     = "sec-ch-ua-model,sec-ch-ua-platform-version"
+      },
+      {
+        name      = "permissions-policy"
+        operation = "set"
+        value     = "ch-ua-model=*,ch-ua-platform-version=*"
+      },
+    ]
+  },
+  {
+    action      = "rewrite",
+    description = "X-Frame-Options header prevents click-jacking attacks",
+    enabled     = true
+    expression  = "(not http.request.uri.path matches \"^/api/.*\")"
+    headers     = [
+      {
+        name      = "X-Frame-Options"
+        operation = "set"
+        value     = "DENY"
+      },
+    ]
+  },
+```
