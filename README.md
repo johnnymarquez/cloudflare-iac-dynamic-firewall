@@ -1,7 +1,8 @@
 # Cloudflare Infrastructure as Code Dynamical Allocation of Firewall Rules
 
-The following repository contains sample infrastructure as code for managing Cloudflare resources. Relevant feature
-include the dynamic provisioning of new rules.
+The following repository contains sample infrastructure as code for managing Cloudflare resources. Relevant features
+include the dynamic provisioning of new rules and rulesets using Terraform's dynamic nested
+blocks. [Reference](https://developer.hashicorp.com/terraform/language/expressions/dynamic-blocks).
 
 ## Export Api Key & Email as environment variables or secrets to maintain security
 
@@ -39,16 +40,18 @@ Example:
 
 For possible values on action, expression, and products, please refer to
 [Cloudflare Documentation](https://developers.cloudflare.com/firewall/).
-For the description field, ideally it should be composed of "actions:brand/description"
+For the description field, a personal preference is to include enough detail in the
+format ```actions:brand/description```
 
 ## Ruleset
 
-Dynamic Ruleset resource has the capability to automatically create new resources by just listing the as a list of
+Dynamic Ruleset resource has the capability to automatically create new resources by just listing them as a list of
 objects into the ```tfvars/env``` file. With the given structure, the resource allows un unlimited number of rulesets
-with unlimited number of nested headers inside whichever ruleset created;
-The following is an example structure that can increase according to the needs of the project. Although it's a
-recommended practice to maintain a clear organization of such items. When a different project/purpose for new rulesets
-is required, a new resource with the same approach would be better suited.
+with unlimited number of nested headers inside whichever ruleset created.
+The following is an example structure that can increase according to the needs of the project. However, as a good
+practice and to maintain a clear organization, the nested Rulesets should belong to the same purpose/project/subject.
+When your project requires a new kind of Releset, the generation of a new ```resource``` or ```terraform``` file would
+be better suited.
 
 ```
   {
